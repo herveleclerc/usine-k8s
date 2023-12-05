@@ -15,6 +15,7 @@ spec:
       syncer:
         extraArgs:
           - --tls-san={{ .Values.cluster_fqdn }}
+          - --tls-san={{ .Values.cluster_name }}.{{ .Values.cluster_name }}.svc
           - --out-kube-config-server=https://{{ .Values.cluster_fqdn }}
       ingress:
         enabled: true
