@@ -2,7 +2,7 @@ apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
   name: {{ .Values.cluster_name }}
-  annotations:
+  labels:
     env: sveltos-managed
 spec:
   controlPlaneRef:
