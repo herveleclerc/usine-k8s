@@ -1,0 +1,7 @@
+# Default values for usine-k8s.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+cluster_name: cluster-name
+cluster_fqdn: cluster-name.vclusters.caas.fr
+k8s_version: 1.27.6

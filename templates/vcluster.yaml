@@ -1,0 +1,29 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha1
+kind: VCluster
+metadata:
+  name: {{ .Values.cluster_name }}
+spec:
+  controlPlaneEndpoint:
+    host: ""
+    port: 0
+  helmRelease:
+    chart:
+      name: vcluster-k8s
+      repo: https://charts.loft.sh
+      version: 0.13.0
+    values: |
+      syncer:
+        extraArgs:
+          - --tls-san={{ .Values.cluster_fqdn }}
+          - --out-kube-config-server=https://{{ .Values.cluster_fqdn }}
+      ingress:
+        enabled: true
+        pathType: ImplementationSpecific
+        ingressClassName: nginx
+        host: {{ .Values.cluster_fqdn }}
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+          nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+          nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+          cert-manager.io/cluster-issuer: letsencrypt
+  kubernetesVersion: {{ .Values.k8s_version }}
