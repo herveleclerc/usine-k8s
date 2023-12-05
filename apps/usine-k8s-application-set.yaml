@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: usine-k8s
+spec:
+  goTemplate: true
+  generators:
+  - git:
+      repoURL: https://github.com/herveleclerc/usine-k8s-params.git
+      revision: HEAD
+      files:
+      - path: "infrastructure/clusters/**/params.yaml"
+  template:
+    metadata:
+      name: '{{.cluster_name}}'
+    spec:
+      destination:
+        name: ''
+        namespace: '{{.cluster_name}}'
+        server: 'https://kubernetes.default.svc'
+      source:
+        path: chart
+        repoURL: 'https://github.com/herveleclerc/usine-k8s.git'
+        targetRevision: HEAD
+        helm:
+          parameters:
+          - name: cluster_name
+            value: '{{.cluster_name}}'
+          - name: cluster_fqdn
+            value: '{{.cluster_fqdn}}'
+          - name: 'k8s_version'
+            value: '{{.k8s_version}}'
+      sources: []
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
